@@ -1,36 +1,196 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Dashboard
+
+A full-stack business management dashboard built for managing self-employment operations, including client management, invoice generation with PDF export, expense tracking, and Google Drive integration.
+
+## Features
+
+- **Dashboard Overview** - Real-time statistics, revenue charts, and quick access to all modules
+- **Client Management** - Full CRUD operations for managing business clients (Kunden)
+- **Invoice Generation** - Create professional German invoices with automatic PDF generation
+- **PDF Export** - Server-side PDF rendering using React PDF, automatically uploaded to Google Drive
+- **Expense Tracking** - Track and categorize business expenses
+- **Google Drive Integration** - Browse, upload, and manage files directly from the dashboard
+- **Google Sheets Backend** - Uses Google Sheets as a lightweight database for easy data access
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| **Framework** | Next.js 16 (App Router) |
+| **Language** | TypeScript 5 |
+| **UI** | React 19, Tailwind CSS 4 |
+| **Authentication** | JWT with jose library |
+| **PDF Generation** | @react-pdf/renderer |
+| **APIs** | Google Sheets API, Google Drive API |
+| **Icons** | Lucide React |
+
+## Architecture
+
+```
+app/
+├── (dashboard)/           # Protected routes with shared layout
+│   ├── page.tsx          # Main dashboard with stats & charts
+│   ├── clients/          # Client management
+│   ├── invoices/         # Invoice listing & creation
+│   ├── drive/            # Google Drive file browser
+│   └── gewerbe/          # Business-specific modules
+│       ├── clients/      # Gewerbe client management
+│       ├── invoices/     # Invoice creation with PDF
+│       └── expenses/     # Expense tracking
+├── api/
+│   ├── auth/             # JWT authentication endpoints
+│   ├── clients/          # Client CRUD API
+│   ├── invoices/         # Invoice CRUD API
+│   ├── drive/            # Google Drive operations
+│   └── gewerbe/          # Business-specific APIs
+├── login/                # Authentication page
+└── layout.tsx            # Root layout
+
+lib/
+├── auth.ts               # JWT session management
+├── google.ts             # Google Sheets/Drive helpers
+├── google-oauth.ts       # OAuth token management
+└── gewerbe/
+    ├── types.ts          # TypeScript interfaces
+    ├── sheets.ts         # Spreadsheet operations
+    ├── generate-pdf.ts   # PDF generation
+    └── pdf-template.tsx  # Invoice PDF layout
+
+components/
+├── dashboard/            # Dashboard-specific components
+│   ├── header.tsx
+│   ├── sidebar.tsx
+│   └── revenue-chart.tsx
+└── ui/                   # Reusable UI components
+    ├── button.tsx
+    ├── card.tsx
+    ├── table.tsx
+    └── ...
+```
+
+## Security
+
+This project follows OWASP security guidelines:
+
+- **Authentication** - JWT-based session management with secure httpOnly cookies
+- **Timing-Safe Comparison** - Password verification uses constant-time comparison to prevent timing attacks
+- **Input Sanitization** - Query parameters are sanitized to prevent injection attacks
+- **Environment Secrets** - All sensitive credentials stored in environment variables
+- **Secure Cookies** - Session cookies use `httpOnly`, `secure`, and `sameSite` attributes
+- **Route Protection** - Middleware-based authentication for all protected routes
+
+## Design System
+
+Dark theme with geometric styling inspired by HexOS:
+
+- **Background**: `#050505` (page), `#0F0F0F` (sidebar), `#1B2124` (inputs)
+- **Accent**: `#E0FF00` (yellow-green)
+- **Typography**: Inter font family
+- **Components**: Hexagonal clip-path styling on buttons and cards
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- Google Cloud Project with Sheets and Drive APIs enabled
+- Google Service Account for API access
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/personal-dashboard.git
+cd personal-dashboard
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your credentials
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file with the following variables:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+# Authentication
+DASHBOARD_PASSWORD=your-secure-password
+AUTH_SECRET=your-32-character-minimum-secret
 
-## Learn More
+# Google Service Account
+GOOGLE_SERVICE_ACCOUNT_EMAIL=...
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 
-To learn more about Next.js, take a look at the following resources:
+# Google OAuth (for Drive uploads)
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_REFRESH_TOKEN=...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Google Resources
+GOOGLE_SHEET_ID=your-sheet-id
+GOOGLE_DRIVE_FOLDER_ID=your-folder-id
+GOOGLE_DRIVE_INVOICES_FOLDER_ID=your-invoices-folder-id
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Invoice Configuration
 
-## Deploy on Vercel
+Configure your business details for invoice PDF generation:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+# Invoice Sender Information
+INVOICE_SENDER_NAME=Max Mustermann
+INVOICE_SENDER_STREET=Musterstr. 1
+INVOICE_SENDER_CITY=12345 Berlin
+INVOICE_SENDER_UST_ID=DE123456789
+INVOICE_SENDER_BANK=Deutsche Bank
+INVOICE_SENDER_IBAN=DE89370400440532013000
+INVOICE_SENDER_EMAIL=mail@example.com
+INVOICE_SENDER_WEBSITE=www.example.com
+INVOICE_SENDER_PHONE=+49 123 456789
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Tax Configuration
+INVOICE_TAX_RATE=0              # 0 for Kleinunternehmer, 7 or 19 for regular
+INVOICE_KLEINUNTERNEHMER=true   # Show §19 UStG notice on invoices
+```
+
+| Variable | Description |
+|----------|-------------|
+| `INVOICE_SENDER_NAME` | Your full name or company name |
+| `INVOICE_SENDER_STREET` | Street address |
+| `INVOICE_SENDER_CITY` | City with postal code |
+| `INVOICE_SENDER_UST_ID` | VAT ID (Umsatzsteuer-Identifikationsnummer) |
+| `INVOICE_SENDER_BANK` | Bank name |
+| `INVOICE_SENDER_IBAN` | Bank IBAN |
+| `INVOICE_SENDER_EMAIL` | Contact email |
+| `INVOICE_SENDER_WEBSITE` | Website URL |
+| `INVOICE_SENDER_PHONE` | Phone number |
+| `INVOICE_TAX_RATE` | Tax rate: `0` (Kleinunternehmer), `7` (reduced), or `19` (standard) |
+| `INVOICE_KLEINUNTERNEHMER` | Set to `true` to show Kleinunternehmer notice (§19 UStG) |
+
+## Deployment
+
+This project is optimized for deployment on [Vercel](https://vercel.com):
+
+```bash
+npm run build
+```
+
+Set environment variables in your Vercel project settings.
+
+## Screenshots
+
+*Coming soon*
+
+## License
+
+This project is for personal use. All rights reserved.
+
+---
+
+Built with Next.js and TypeScript
