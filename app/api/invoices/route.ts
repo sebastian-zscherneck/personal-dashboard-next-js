@@ -7,6 +7,9 @@ import {
   generateInvoiceNumber,
 } from "@/lib/invoices";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

@@ -6,7 +6,12 @@ import {
   deleteDriveFile,
 } from "@/lib/google";
 
-const DEFAULT_FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID;
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
+function getDefaultFolderId() {
+  return process.env.GOOGLE_DRIVE_FOLDER_ID;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Otherwise show files in specific folder (or default folder)
-    const targetFolder = folderId || DEFAULT_FOLDER_ID;
+    const targetFolder = folderId || getDefaultFolderId();
     const files = await listDriveFiles(targetFolder || undefined);
 
     return NextResponse.json(files);
@@ -38,7 +43,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
-    const folderId = (formData.get("folderId") as string) || DEFAULT_FOLDER_ID;
+    const folderId = (formData.get("folderId") as string) || getDefaultFolderId();
 
     if (!file) {
       return NextResponse.json(

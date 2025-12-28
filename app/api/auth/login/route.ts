@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createSession, setSessionCookie } from "@/lib/auth";
 import { timingSafeEqual } from "crypto";
 
+// Force dynamic rendering - ensures env vars are read at runtime, not build time
+export const dynamic = "force-dynamic";
+
 function verifyPasswordSafe(input: string, expected: string): boolean {
   const inputBuffer = Buffer.from(input.padEnd(256, "\0"));
   const expectedBuffer = Buffer.from(expected.padEnd(256, "\0"));

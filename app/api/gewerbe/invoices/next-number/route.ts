@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getNextInvoiceNumber } from "@/lib/gewerbe/sheets";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/gewerbe/invoices/next-number
  * Returns the next available invoice number

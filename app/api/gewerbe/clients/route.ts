@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getGewerbeClients, addGewerbeClient } from "@/lib/gewerbe/sheets";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/gewerbe/clients
  * Returns all Gewerbe clients from Kunden tab

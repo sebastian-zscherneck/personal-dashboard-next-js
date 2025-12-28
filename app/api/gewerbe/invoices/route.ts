@@ -10,6 +10,9 @@ import { generateInvoicePDF, generateInvoiceFilename } from "@/lib/gewerbe/gener
 import { uploadToUserDrive } from "@/lib/google";
 import type { GewerbeInvoiceData, InvoiceLineItem } from "@/lib/gewerbe/types";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/gewerbe/invoices
  * Returns all Gewerbe invoices from Einnahmen_Gewerbe

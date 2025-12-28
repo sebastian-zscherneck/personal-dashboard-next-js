@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientById, updateClient } from "@/lib/clients";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

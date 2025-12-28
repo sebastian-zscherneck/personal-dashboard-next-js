@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { clearSessionCookie } from "@/lib/auth";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   try {
     await clearSessionCookie();

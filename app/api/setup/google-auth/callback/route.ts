@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTokensFromCode } from "@/lib/google-oauth";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/setup/google-auth/callback
  * Receives the authorization code from Google and displays the refresh token.

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getGewerbeExpenses } from "@/lib/gewerbe/sheets";
 
+// Force dynamic rendering - ensures env vars are read at runtime
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/gewerbe/expenses
  * Returns all Gewerbe expenses from Ausgaben_Gewerbe
